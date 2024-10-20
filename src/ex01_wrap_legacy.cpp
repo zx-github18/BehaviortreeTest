@@ -48,22 +48,10 @@ Point3D convertFromString(StringView key)
 }
 }  // namespace BT
 
-// clang-format off
-static const char* xml_text = R"(
-
- <root BTCPP_format="4">
-     <BehaviorTree>
-        <MoveTo  goal="-1;3;0.5" />
-     </BehaviorTree>
- </root>
- )";
-
-// clang-format on
-
 int main()
 {
   using namespace BT;
-
+  
   MyLegacyMoveTo move_to;
 
   // Here we use a lambda that captures the reference of move_to
@@ -80,11 +68,12 @@ int main()
   BehaviorTreeFactory factory;
 
   // Register the lambda with BehaviorTreeFactory::registerSimpleAction
-
   PortsList ports = { BT::InputPort<Point3D>("goal") };
   factory.registerSimpleAction("MoveTo", MoveToWrapperWithLambda, ports);
 
-  auto tree = factory.createTreeFromText(xml_text);
+  std::string xml_text_path = "/home/zx/Projects/behaviortree/xml/wrap_legacy_tree.xml"; 
+  //auto tree = factory.createTreeFromText(xml_text);
+  auto tree = factory.createTreeFromFile(xml_text_path);
 
   tree.tickWhileRunning();
 
