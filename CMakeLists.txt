@@ -36,3 +36,11 @@ add_executable(t02_blackboard_and_ports
 target_link_libraries(t02_blackboard_and_ports
     ${PROJECT_SOURCE_DIR}/lib/libbehaviortree_cpp.so
 )
+
+# t04_reactive_and_asynchronous
+add_executable(t04_reactive_and_asynchronous
+    ${PROJECT_SOURCE_DIR}/src/t04_reactive_and_asynchronous.cpp
+)
+target_link_libraries(t04_reactive_and_asynchronous
+    ${PROJECT_SOURCE_DIR}/lib/libbehaviortree_cpp.so
+)
