@@ -1,0 +1,12 @@
+{
+    "[cpp]": {
+      "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "[c]": {
+      "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "clang-format.executable": "/usr/bin/clang-format",
+    "files.autoSave": "afterDelay", 
+  }
