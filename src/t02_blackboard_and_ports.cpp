@@ -1,6 +1,6 @@
 #include "behaviortree_cpp/bt_factory.h"
-#include "action_node/SaySomething.hpp"
-#include "action_node/ThinkWhatToSay.hpp"
+#include "action_node/say_something_node.hpp"
+#include "action_node/think_what_to_say_node.hpp"
 
 int main(){
     BT::BehaviorTreeFactory factory;

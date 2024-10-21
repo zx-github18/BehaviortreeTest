@@ -1,3 +1,4 @@
+#pragma once
 #include "behaviortree_cpp/action_node.h"
 
 // Example of custom SyncActionNode (synchronous action)

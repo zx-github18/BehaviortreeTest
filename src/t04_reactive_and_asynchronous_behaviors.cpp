@@ -1,7 +1,6 @@
 #include "behaviortree_cpp/bt_factory.h"
-#include "action_node/MoveBase.hpp"
-#include "action_node/SaySomething.hpp"
-#include <thread>
+#include "action_node/move_base_node.hpp"
+#include "action_node/say_something_node.hpp"
 
 namespace chr = std::chrono;
 
@@ -11,18 +10,18 @@ BT::NodeStatus CheckBattery(){
 }
 
 namespace BT{
-template <> inline Pose2D convertFromString(StringView pose_str){
-    std::vector<StringView> data = splitString(pose_str, ';');
-    if (data.size()!= 3){
-        throw RuntimeError("pose string error!");
-    }else{
-        Pose2D pose;
-        pose.x = convertFromString<double>(data[0]);
-        pose.y = convertFromString<double>(data[1]);
-        pose.theta = convertFromString<double>(data[2]);
-        return pose;
+    template <> inline Pose2D convertFromString(StringView pose_str){
+        std::vector<StringView> data = splitString(pose_str, ';');
+        if (data.size()!= 3){
+            throw RuntimeError("pose string error!");
+        }else{
+            Pose2D pose;
+            pose.x = convertFromString<double>(data[0]);
+            pose.y = convertFromString<double>(data[1]);
+            pose.theta = convertFromString<double>(data[2]);
+            return pose;
+        }
     }
-}
 }
 
 int main()
@@ -34,7 +33,7 @@ int main()
     factory.registerSimpleCondition("BatteryOK", std::bind(CheckBattery));
 
     const std::string xml_dir = "/home/zx/Projects/behaviortree/xml/";
-    const std::string xml_name = "t04_reactive_and_asynchronous_tree.xml";
+    const std::string xml_name = "t04_reactive_and_asynchronous_behaviors_tree.xml";
     const std::string xml_path = xml_dir + xml_name;
     BT::Tree tree = factory.createTreeFromFile(xml_path);
 

@@ -71,7 +71,7 @@ int main()
   PortsList ports = { BT::InputPort<Point3D>("goal") };
   factory.registerSimpleAction("MoveTo", MoveToWrapperWithLambda, ports);
 
-  std::string xml_text_path = "/home/zx/Projects/behaviortree/xml/wrap_legacy_tree.xml"; 
+  std::string xml_text_path = "/home/zx/Projects/behaviortree/xml/ex01_wrap_legacy_tree.xml"; 
   //auto tree = factory.createTreeFromText(xml_text);
   auto tree = factory.createTreeFromFile(xml_text_path);
 

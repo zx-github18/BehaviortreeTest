@@ -1,10 +1,7 @@
+#pragma once
 #include "behaviortree_cpp/action_node.h"
+#include "common/Pose2D.h"
 
-struct Pose2D{
-    double x;
-    double y;
-    double theta;
-};
 
 namespace chr = std::chrono;
 

@@ -1,75 +1,85 @@
 // .clang-format
-
-# 基于那个配置文件
-BasedOnStyle: LLVM
-# 访问说明符的偏移(public private)
-AccessModifierOffset: -4
-# 括号之后,水平对齐参数: Align DontAlign AlwaysBreak
+---
+Language: Cpp
+#圆括号之后,多行内容,进行对齐
 AlignAfterOpenBracket: Align
-# 连续的赋值时,对齐所有的等号
+
+#连续赋值时，对齐所有等号
 AlignConsecutiveAssignments: true
-# 连续声明时，对齐所有声明的变量名
+#连续声明时，对齐所有声明的变量名
 AlignConsecutiveDeclarations: true
-# 左对齐换行(使用反斜杠换行)的反斜杠 
-AlignEscapedNewlinesLeft: true
-# 水平对齐二元和三元表达式的操作数 
-AlignOperands: true
-# 对齐连续的尾随的注释  
+
+#连续宏定义时，对齐所有定义值
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+#AlignOperands Align将对齐分割到多行上的单个表达式的操作数
+AlignOperands: Align
+#对齐连续的尾随的注释
 AlignTrailingComments: true
-# 允许函数声明的所有参数在放在下一行  
-AllowAllParametersOfDeclarationOnNextLine: true
-# 允许短的块放在同一行  
-AllowShortBlocksOnASingleLine : false
-# 允许短的case标签放在同一行
-AllowShortCaseLabelsOnASingleLine: false
-# 允许短的函数放在同一行: None, InlineOnly(定义在类中), Empty(空函数), Inline(定义在类中，空函数), All 
-AllowShortFunctionsOnASingleLine: Empty
-# 是否允许短if单行 If true, if (a) return; 可以放到同一行
-AllowShortIfStatementsOnASingleLine: false
-# 允许短的循环保持在同一行   
-AllowShortLoopsOnASingleLine: false 
-# 总是在定义返回类型后换行(deprecated)   
-AlwaysBreakAfterDefinitionReturnType: None
-# 每行字符的限制，0表示没有限制  
-ColumnLimit: 100
-# 描述具有特殊意义的注释的正则表达式，它不应该被分割为多行或以其它方式改变
-CommentPragmas: '^ IWYU pragma:'
-# 语言: None Cpp Java Objc Protp
-Language: Cpp 
-#指针的*的挨着哪边
+#允许将一个函数声明的所有参数移到下一行.
+AllowAllParametersOfDeclarationOnNextLine: false
+#将简单的语句块放到一个单行
+AllowShortBlocksOnASingleLine: false
+#if (a) return;放单行 属性：Never、WithoutElse没有else的可以放单行、OnlyFirstIf只有第一个if放单行、AllIfsAndElse总是把简短的if, else if和else语句放在同一行。
+AllowShortIfStatementsOnASingleLine: Never
+#BinPackArguments：如果为false，函数调用的参数要么全部在同一行，要么各有一行。
+BinPackArguments: false
+#BinPackParameters：如果为false，函数声明或函数定义的参数将全部在同一行或各有一行。
+BinPackParameters: false
+
+BreakBeforeBraces: Custom
+# 控制单独的大括号换行事件，只有当BreakBeforeBraces设置为Custom时才有效
+BraceWrapping:
+  #使控制语句(if/for/while/switch/..)换行。
+  AfterControlStatement: true
+  #使枚举定义换行。
+  AfterEnum: true
+  #使函数定义换行。
+  AfterFunction: true
+  #使结构定义换行。
+  AfterStruct: true
+  #使共同体定义换行。
+  AfterUnion: true
+  #在else之前换行。
+  BeforeElse: true
+  #换行大括号缩进。
+  IndentBraces: false
+  #空函数是否可以放在单行：flase允许 true不允许
+  SplitEmptyFunction: true
+  #空类，结构或联合主体是否可以放在单行：flase允许 true不允许
+  SplitEmptyRecord: true
+  #空namespace是否可以放在单行：flase允许 true不允许
+  SplitEmptyNamespace: true
+
+SpaceBeforeParens: Custom
+#控制圆括号前的单独空格，只有当SpaceBeforeParens设置为Custom时才有效
+SpaceBeforeParensOptions:
+  #在控制语句关键字(for/if/while…)和开括号之间放置空格
+  AfterControlStatements: true
+  #在函数声明名称和开括号之间不允许使用空格
+  AfterFunctionDeclarationName: false
+
+#指针对齐：右
 PointerAlignment: Right
-#缩进宽度
+# 三元运算符将被放置在换行后
+BreakBeforeTernaryOperators: true
+#每行字符的限制，0表示没有限制
+ColumnLimit: 0
+#缩进空格宽度：4
 IndentWidth: 4
-# 连续的空行保留几行
-MaxEmptyLinesToKeep: 1
-# 在 @property 后面添加空格, \@property (readonly) 而不是 \@property(readonly).
-ObjCSpaceAfterProperty: true
-# OC block后面的缩进
-ObjCBlockIndentWidth: 4
-# 是否允许短方法单行
-AllowShortFunctionsOnASingleLine: false
-# 换行的时候对齐操作符
-#AlignOperands: true
-# 中括号两边空格 [] 
-SpacesInSquareBrackets: true
-# 小括号两边添加空格
-SpacesInParentheses : false
-#等号两边的空格
+#保留在赋值操作符之前的空格
 SpaceBeforeAssignmentOperators: true
-# 容器类的空格 例如 OC的字典
-SpacesInContainerLiterals: true
-#缩进
-IndentWrappedFunctionNames: true
-#在block从空行开始
-KeepEmptyLinesAtTheStartOfBlocks: true
-#在构造函数初始化时按逗号断行，并以冒号对齐
-BreakConstructorInitializersBeforeComma: true
-#括号后添加空格
-SpaceAfterCStyleCast: false
-# 允许排序#include, 造成编译错误
-# SortIncludes: true 
-# 缩进case 标签
-IndentCaseLabels: true 
-#tab键盘的宽度
-TabWidth: 4
+#不要排序include的头文件
+SortIncludes: Never
+#允许重新排版注释
+ReflowComments: true
+#尾行注释前的空格数
+SpacesBeforeTrailingComments: 2
+#连续空行的最大数量
+MaxEmptyLinesToKeep: 1
+#使用tab字符: Never从不使用, ForIndentation仅在缩进时使用制表符， ForContinuationAndIndentation, Always
 UseTab: Never
+#SpacesInParentheses如果为真（true）, 将会在“(”之后和“)”之前插入空格。
+SpacesInParentheses: false
+#SpacesInSquareBrackets如果为真（true）,将会在“[”之后和“]”之前插入空格。
+SpacesInSquareBrackets: false
+
