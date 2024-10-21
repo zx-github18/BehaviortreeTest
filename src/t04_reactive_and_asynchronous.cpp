@@ -116,7 +116,6 @@ int main()
     const std::string xml_dir = "/home/zx/Projects/behaviortree/xml/";
     const std::string xml_name = "t04_reactive_and_asynchronous_tree.xml";
     const std::string xml_path = xml_dir + xml_name;
-    // std::cout << xml_path << std::endl;
     BT::Tree tree = factory.createTreeFromFile(xml_path);
 
     std::cout << "--- ticking" << std::endl;

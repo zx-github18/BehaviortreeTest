@@ -44,3 +44,11 @@ add_executable(t04_reactive_and_asynchronous
 target_link_libraries(t04_reactive_and_asynchronous
     ${PROJECT_SOURCE_DIR}/lib/libbehaviortree_cpp.so
 )
+
+# t05_using_subtree
+add_executable(t05_using_subtree
+    ${PROJECT_SOURCE_DIR}/src/t05_using_subtree.cpp
+)
+target_link_libraries(t05_using_subtree
+    ${PROJECT_SOURCE_DIR}/lib/libbehaviortree_cpp.so
+)
