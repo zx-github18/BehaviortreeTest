@@ -1,5 +1,3 @@
-// .clang-format
----
 Language: Cpp
 #圆括号之后,多行内容,进行对齐
 AlignAfterOpenBracket: Align
@@ -63,7 +61,7 @@ PointerAlignment: Right
 # 三元运算符将被放置在换行后
 BreakBeforeTernaryOperators: true
 #每行字符的限制，0表示没有限制
-ColumnLimit: 0
+ColumnLimit: 80
 #缩进空格宽度：4
 IndentWidth: 4
 #保留在赋值操作符之前的空格
@@ -82,4 +80,5 @@ UseTab: Never
 SpacesInParentheses: false
 #SpacesInSquareBrackets如果为真（true）,将会在“[”之后和“]”之前插入空格。
 SpacesInSquareBrackets: false
+BasedOnStyle: LLVM
 
