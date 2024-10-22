@@ -58,7 +58,9 @@ int main()
 
     // IMPORTANT: when the object "tree" goes out of scope, all the
     // TreeNodes are destroyed
-    const std::string xml_dir = "/home/zx/Projects/behaviortree/xml/";
+    const std::string xml_dir =
+        "/home/zx/Projects/BehaviortreeTest/src/examples/"
+        "t01_first_behaviortree/";
     const std::string xml_name = "t01_first_behaviortree_tree.xml";
     const std::string xml_path = xml_dir + xml_name;
     auto tree = factory.createTreeFromFile(xml_path);

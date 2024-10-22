@@ -1,5 +1,4 @@
 #include "behaviortree_cpp/bt_factory.h"
-#include "behaviortree_cpp/loggers/bt_cout_logger.h"
 
 /** In this tutorial we will see how to wrap legacy code into a
  * BehaviorTree in a non-intrusive way, i.e. without modifying the
@@ -71,7 +70,8 @@ int main()
     factory.registerSimpleAction("MoveTo", MoveToWrapperWithLambda, ports);
 
     std::string xml_text_path =
-        "/home/zx/Projects/behaviortree/xml/ex01_wrap_legacy_tree.xml";
+        "/home/zx/Projects/BehaviortreeTest/src/examples/"
+        "ex01_wrap_legacy/ex01_wrap_legacy_tree.xml";
     // auto tree = factory.createTreeFromText(xml_text);
     auto tree = factory.createTreeFromFile(xml_text_path);
 

@@ -28,9 +28,12 @@ int main()
     factory.registerNodeType<MoveBase>("MoveBase");
     factory.registerNodeType<SaySomething>("SaySomething");
 
-    const std::string xml_dir = "/home/zx/Projects/behaviortree/xml/";
-    const std::string xml_name = "t06_remapping_ports_of_subtree_tree.xml";
-    const std::string xml_path = xml_dir + xml_name;
+    const std::string source_dir =
+        "/home/zx/Projects/BehaviortreeTest/src/examples/";
+    const std::string example_name = "t06_remapping_ports_of_subtree";
+    const std::string xml_name = example_name + "_tree.xml";
+    const std::string xml_path = source_dir + example_name + "/" + xml_name;
+
     factory.registerBehaviorTreeFromFile(xml_path);
 
     auto tree = factory.createTree("MainTree");

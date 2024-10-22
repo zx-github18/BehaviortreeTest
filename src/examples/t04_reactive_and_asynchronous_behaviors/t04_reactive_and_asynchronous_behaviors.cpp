@@ -38,10 +38,11 @@ int main()
     factory.registerNodeType<MoveBase>("MoveBase");
     factory.registerSimpleCondition("BatteryOK", std::bind(CheckBattery));
 
-    const std::string xml_dir = "/home/zx/Projects/behaviortree/xml/";
-    const std::string xml_name =
-        "t04_reactive_and_asynchronous_behaviors_tree.xml";
-    const std::string xml_path = xml_dir + xml_name;
+    const std::string source_dir =
+        "/home/zx/Projects/BehaviortreeTest/src/examples/";
+    const std::string example_name = "t04_reactive_and_asynchronous_behaviors";
+    const std::string xml_name = example_name + "_tree.xml";
+    const std::string xml_path = source_dir + example_name + "/" + xml_name;
     BT::Tree tree = factory.createTreeFromFile(xml_path);
 
     std::cout << "--- ticking" << std::endl;

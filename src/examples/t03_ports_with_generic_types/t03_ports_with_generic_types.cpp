@@ -26,9 +26,11 @@ int main()
     factory.registerNodeType<CalculateGoal>("CalculateGoal");
     factory.registerNodeType<PrintTarget>("PrintTarget");
 
-    std::string xml_path_dir = "/home/zx/Projects/behaviortree/xml/";
-    std::string xml_name = "t03_ports_with_generic_types_tree.xml";
-    std::string xml_path = xml_path_dir + xml_name;
+    const std::string source_dir =
+        "/home/zx/Projects/BehaviortreeTest/src/examples/";
+    const std::string example_name = "t03_ports_with_generic_types";
+    const std::string xml_name = example_name + "_tree.xml";
+    const std::string xml_path = source_dir + example_name + "/" + xml_name;
     BT::Tree tree = factory.createTreeFromFile(xml_path);
     tree.tickWhileRunning();
     return 0;
