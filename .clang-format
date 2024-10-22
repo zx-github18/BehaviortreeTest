@@ -3,9 +3,9 @@ Language: Cpp
 AlignAfterOpenBracket: Align
 
 #连续赋值时，对齐所有等号
-AlignConsecutiveAssignments: true
+AlignConsecutiveAssignments: false
 #连续声明时，对齐所有声明的变量名
-AlignConsecutiveDeclarations: true
+AlignConsecutiveDeclarations: false
 
 #连续宏定义时，对齐所有定义值
 AlignConsecutiveMacros: AcrossEmptyLinesAndComments

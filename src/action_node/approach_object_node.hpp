@@ -1,4 +1,6 @@
-#pragma once
+#ifndef APPROACH_OBJECT_NODE_HPP
+#define APPROACH_OBJECT_NODE_HPP
+
 #include "behaviortree_cpp/action_node.h"
 
 // Example of custom SyncActionNode (synchronous action)
@@ -14,3 +16,4 @@ class ApproachObject : public BT::SyncActionNode {
         return BT::NodeStatus::SUCCESS;
     }
 };
+#endif

@@ -1,6 +1,8 @@
-#pragma once
+#ifndef CALCULATE_GOAL_NODE_HPP
+#define CALCULATE_GOAL_NODE_HPP
+
 #include "behaviortree_cpp/action_node.h"
-#include "common/Position2D.h"
+#include "common/position2d.h"
 
 class CalculateGoal : public BT::SyncActionNode {
   public:
@@ -22,3 +24,5 @@ class CalculateGoal : public BT::SyncActionNode {
         return BT::NodeStatus::SUCCESS;
     }
 };
+
+#endif  // CALCULATE_GOAL_NODE_HPP

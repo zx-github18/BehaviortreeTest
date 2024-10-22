@@ -6,12 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories (
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/common
-    ${PROJECT_SOURCE_DIR}/src/action_node
-    ${PROJECT_SOURCE_DIR}/src/action_condition
-)
-aux_source_directory(
-    ${PROJECT_SOURCE_DIR}/src SRC_LIST
 )
 
 # ex01_wrap_legacy
@@ -23,7 +17,7 @@ target_link_libraries(ex01_wrap_legacy
 )
 
 # t01_first_behaviortree
-add_executable(t01_first_behaviortree
+add_executable(t01_first_behaviortree 
     ${PROJECT_SOURCE_DIR}/src/t01_first_behaviortree.cpp
     ${PROJECT_SOURCE_DIR}/src/action_node/approach_object_node.hpp
 )
@@ -66,5 +60,15 @@ add_executable(t05_using_subtree
     ${PROJECT_SOURCE_DIR}/src/t05_using_subtree.cpp
 )
 target_link_libraries(t05_using_subtree
+    ${PROJECT_SOURCE_DIR}/lib/libbehaviortree_cpp.so
+)
+
+# t06_remapping_ports_of_subtree
+add_executable(t06_remapping_ports_of_subtree
+    ${PROJECT_SOURCE_DIR}/src/t06_remapping_ports_of_subtree.cpp
+    ${PROJECT_SOURCE_DIR}/src/action_node/say_something_node.hpp
+    ${PROJECT_SOURCE_DIR}/src/action_node/move_base_node.hpp
+)
+target_link_libraries(t06_remapping_ports_of_subtree
     ${PROJECT_SOURCE_DIR}/lib/libbehaviortree_cpp.so
 )

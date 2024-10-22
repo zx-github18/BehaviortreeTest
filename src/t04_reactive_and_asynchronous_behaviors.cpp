@@ -1,4 +1,5 @@
 #include "behaviortree_cpp/bt_factory.h"
+#include "common/pose2d.h"
 #include "action_node/move_base_node.hpp"
 #include "action_node/say_something_node.hpp"
 
@@ -21,8 +22,8 @@ template <> inline Pose2D convertFromString(StringView pose_str)
     else
     {
         Pose2D pose;
-        pose.x     = convertFromString<double>(data[0]);
-        pose.y     = convertFromString<double>(data[1]);
+        pose.x = convertFromString<double>(data[0]);
+        pose.y = convertFromString<double>(data[1]);
         pose.theta = convertFromString<double>(data[2]);
         return pose;
     }
@@ -41,7 +42,7 @@ int main()
     const std::string xml_name =
         "t04_reactive_and_asynchronous_behaviors_tree.xml";
     const std::string xml_path = xml_dir + xml_name;
-    BT::Tree          tree     = factory.createTreeFromFile(xml_path);
+    BT::Tree tree = factory.createTreeFromFile(xml_path);
 
     std::cout << "--- ticking" << std::endl;
     BT::NodeStatus status = tree.tickOnce();

@@ -1,6 +1,8 @@
-#pragma once
+#ifndef PRINT_TARGE_NODE_HPP
+#define PRINT_TARGE_NODE_HPP
+
 #include "behaviortree_cpp/action_node.h"
-#include "common/Position2D.h"
+#include "common/position2d.h"
 
 class PrintTarget : public BT::SyncActionNode {
   public:
@@ -29,3 +31,5 @@ class PrintTarget : public BT::SyncActionNode {
         return BT::NodeStatus::SUCCESS;
     }
 };
+
+#endif  // PRINT_TARGE_NODE_HPP

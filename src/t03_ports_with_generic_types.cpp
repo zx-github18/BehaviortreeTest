@@ -18,7 +18,7 @@ template <> inline Position2D convertFromString(StringView str)
         return output;
     }
 }
-};  // namespace BT
+}  // namespace BT
 
 int main()
 {
@@ -27,9 +27,9 @@ int main()
     factory.registerNodeType<PrintTarget>("PrintTarget");
 
     std::string xml_path_dir = "/home/zx/Projects/behaviortree/xml/";
-    std::string xml_name     = "t03_ports_with_generic_types_tree.xml";
-    std::string xml_path     = xml_path_dir + xml_name;
-    BT::Tree    tree         = factory.createTreeFromFile(xml_path);
+    std::string xml_name = "t03_ports_with_generic_types_tree.xml";
+    std::string xml_path = xml_path_dir + xml_name;
+    BT::Tree tree = factory.createTreeFromFile(xml_path);
     tree.tickWhileRunning();
     return 0;
 }

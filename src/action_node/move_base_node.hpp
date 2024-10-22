@@ -1,6 +1,8 @@
-#pragma once
+#ifndef MOVE_BASE_NODE_HPP
+#define MOVE_BASE_NODE_HPP
+
 #include "behaviortree_cpp/action_node.h"
-#include "common/Pose2D.h"
+#include "common/pose2d.h"
 
 namespace chr = std::chrono;
 
@@ -29,7 +31,7 @@ class MoveBase : public BT::StatefulActionNode {
     virtual void onHalted() override;
 
   private:
-    Pose2D                                _goal;
+    Pose2D _goal;
     std::chrono::system_clock::time_point _complete_time_;
 };
 
@@ -63,3 +65,5 @@ BT::NodeStatus MoveBase::onRunning()
 }
 
 void MoveBase::onHalted() { std::cout << "MoveBase abort!" << std::endl; }
+
+#endif  // MOVE_BASE_NODE_HPP

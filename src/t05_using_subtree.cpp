@@ -78,9 +78,9 @@ class CrossDoor {
     }
 
   private:
-    bool _door_open     = false;
-    bool _door_locked   = true;
-    int  _pick_attempts = 0;
+    bool _door_open = false;
+    bool _door_locked = true;
+    int _pick_attempts = 0;
 };
 
 // Helper method to make registering less painful for the user
@@ -112,7 +112,7 @@ int main()
     // In this example a single XML contains multiple <BehaviorTree>
     // To determine which one is the "main one", we should first register
     // the XML and then allocate a specific tree, using its ID
-    const std::string xml_dir  = "/home/zx/Projects/behaviortree/xml/";
+    const std::string xml_dir = "/home/zx/Projects/behaviortree/xml/";
     const std::string xml_name = "t05_using_subtree_tree.xml";
     const std::string xml_path = xml_dir + xml_name;
     factory.registerBehaviorTreeFromFile(xml_path);

@@ -2,14 +2,29 @@
   "[cpp]": {
     "editor.defaultFormatter": "xaver.clang-format"
   },
-  "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-  },
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
   "clang-format.executable": "/usr/bin/clang-format",
   "files.autoSave": "afterDelay",
+  "C_Cpp.clang_format_path": "/usr/bin/clang-format",
+  "C_Cpp.clang_format_sortIncludes": true,
+  "C_Cpp.clang_format_style": "file",
+  "C_Cpp.formatting": "clangFormat",
+  "editor.defaultFormatter": "xaver.clang-format",
+  "editor.formatOnPaste": true,
+  "notebook.defaultFormatter": "xaver.clang-format",
+  "C_Cpp.errorSquiggles": "disabled",
+  "C_Cpp.vcFormat.indent.braces": true,
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.namespace": "sameLine",
+  "files.autoSaveWhenNoErrors": true,
+  "php.validate.executablePath": "",
+  "editor.formatOnSaveMode": "file",
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "files.associations": {
+    "typeindex": "cpp",
+    "typeinfo": "cpp",
     "cctype": "cpp",
     "clocale": "cpp",
     "cmath": "cpp",
@@ -78,17 +93,7 @@
     "streambuf": "cpp",
     "thread": "cpp",
     "cinttypes": "cpp",
-    "typeindex": "cpp",
-    "typeinfo": "cpp",
     "valarray": "cpp",
-    "variant": "cpp",
-    "unordered_set": "cpp"
-  },
-  "C_Cpp.clang_format_path": "/bin/clang-format",
-  "C_Cpp.clang_format_sortIncludes": true,
-  "C_Cpp.clang_format_style": "file",
-  "C_Cpp.formatting": "clangFormat",
-  "editor.defaultFormatter": "xaver.clang-format",
-  "editor.formatOnPaste": true,
-  "notebook.defaultFormatter": "xaver.clang-format",
+    "variant": "cpp"
+  }
 }

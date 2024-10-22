@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SAY_SOMETHING_NODE_HPP
+#define SAY_SOMETHING_NODE_HPP
+
 #include "behaviortree_cpp/action_node.h"
 
 class SaySomething : public BT::SyncActionNode {
@@ -27,3 +29,5 @@ class SaySomething : public BT::SyncActionNode {
         return BT::NodeStatus::SUCCESS;
     }
 };
+
+#endif  // SAY_SOMETHING_NODE_HPP

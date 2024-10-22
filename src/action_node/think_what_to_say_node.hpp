@@ -1,4 +1,6 @@
-#pragma once
+#ifndef THINK_WHAT_TO_SAY_HPP
+#define THINK_WHAT_TO_SAY_HPP
+
 #include "behaviortree_cpp/action_node.h"
 
 class ThinkWhatToSay : public BT::SyncActionNode {
@@ -21,3 +23,5 @@ class ThinkWhatToSay : public BT::SyncActionNode {
         return BT::NodeStatus::SUCCESS;
     }
 };
+
+#endif  // THINK_WHAT_TO_SAY_HPP
