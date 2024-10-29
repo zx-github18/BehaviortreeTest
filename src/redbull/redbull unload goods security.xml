@@ -1,0 +1,255 @@
+
+const char REDBULL_UNLOAD_GOODS_SECURITY_ACTION_XML[] = R"(
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Fallback>
+            <Sequence name="root">
+                <DISABLE_PATH_OBA_AVOID_NODE_NAME />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="must_init_param"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{unload_height}"
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="0.4"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{half_of_goods_length}"
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="0.8"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{goods_length}"
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="must_init_param"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{agv_center_in_goods_front_surface_x}"
+                />
+                <ASSIGN_A_POSE_NODE_NAME
+                    ASSIGN_A_POSE_INPUT_POSE="must_init_param"
+                    ASSIGN_A_POSE_OUTPUT_POSE="{goods_center_station_pose}"
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="0.5"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{detect_again_front_stop_dis}"
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="0.1"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{goods_interval}"
+                />
+
+                <AJUST_YAW_LITTLE_NODE_NAME  
+                    AJUST_YAW_LITTLE_TARGET_POS_INPUT_PORT="{goods_center_station_pose}" 
+                />
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{half_of_goods_length}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{goods_center_station_pose}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{deploy_unload_position_goods_front_surf_pos}"
+                />
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{agv_center_in_goods_front_surface_x}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{deploy_unload_position_goods_front_surf_pos}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{deploy_unload_position_agv_center_pos}"
+                />
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{detect_again_front_stop_dis}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{deploy_unload_position_goods_front_surf_pos}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{deploy_detect_again_position_goods_front_surf_pos}"
+                />
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{agv_center_in_goods_front_surface_x}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{deploy_detect_again_position_goods_front_surf_pos}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{detect_again_agv_center_pose}"
+                />
+                <DEBUG_LOG_NODE_NAME
+                    DEBUG_LOG_STR_INPUT_PORT="cacl detect_again_agv_center_pose"
+                />
+                <PJ_POS_IN_AGV_LA_NODE_NAME  
+                    PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{detect_again_agv_center_pose}" 
+                    PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{detect_again_agv_center_pose}"
+                />
+
+                <ReactiveSequence>
+                     <Fallback>
+                        <Sequence>
+                           <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{detect_again_agv_center_pose}"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_BACK_LIDAR="1"
+                           />
+                           <AUTO_RECOVER_TREE_NODE_NAME />
+                        </Sequence>
+                        <Sequence>
+                           <DEBUG_LOG_NODE_NAME
+                              DEBUG_LOG_STR_INPUT_PORT="auto recoverly halt tree in load goods move"
+                           />
+                           <AUTO_RECOVERLY_HALT_TREE_NODE_NAME />
+                        </Sequence>
+                     </Fallback>
+                     <MOVE_TO_TARGET_NODE_NAME
+                        MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{detect_again_agv_center_pose}" 
+                        MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                     />
+                     <AUTO_RECOVER_TREE_NODE_NAME />
+                </ReactiveSequence>
+                
+
+
+                <SECURITY_DETECT_NODE  
+                    SECURITY_DETECT_THEORY_POSE_INPUT_PORT="{goods_center_station_pose}"
+                    SECURITY_DETECT_RESULT_WORLD_POSE_OUTPUT_PORT="{back_goods_front_surface_pose}"
+                />
+                <PJ_POS_IN_AGV_LA_NODE_NAME  
+                    PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{back_goods_front_surface_pose}" 
+                    PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{back_goods_front_surface_pose_project_in_agv_x}"
+                />
+
+                <IfThenElse>
+                    <GT_OP_NODE_NAME
+                        GT_OP_LFET_VALUE_INPUT_PORT="0.3"
+                        GT_OP_RIGHT_VALUE_INPUT_PORT="{unload_height}"
+                    />
+                    <Sequence>
+                        <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                            TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{goods_interval}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{back_goods_front_surface_pose_project_in_agv_x}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{unload_position_goods_back_surf_pos}"
+                        />
+                        <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                            TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{goods_length}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{unload_position_goods_back_surf_pos}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{unload_position_goods_front_surf_pos}"
+                        />
+                        <DEBUG_LOG_NODE_NAME
+                            DEBUG_LOG_STR_INPUT_PORT="cacl high station unload position"
+                        />
+                        <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                            TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{agv_center_in_goods_front_surface_x}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{unload_position_goods_front_surf_pos}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{unload_position_agv_center_pos}"
+                        />
+                    </Sequence>
+                    <Sequence>
+                        <PJ_POS_IN_AGV_LA_NODE_NAME  
+                            PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{back_goods_front_surface_pose}" 
+                            PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{back_goods_front_surface_pose_project_in_agv_x}"
+                            PJ_POS_IN_AGV_LA_Y_AXIS_LOCAL_POS_OUTPUT_PORT="{back_goods_front_surface_pose_project_in_agv_y_local_pos}"
+                        />
+                        <DEBUG_LOG_NODE_NAME
+                            DEBUG_LOG_STR_INPUT_PORT="cacl low station unload position and offset y"
+                        />
+                        <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                            TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{agv_center_in_goods_front_surface_x}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{back_goods_front_surface_pose_project_in_agv_x}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{unload_position_agv_center_pos}"
+                        />
+                        <PARSE_POSE_NODE_NAME
+                            PARSE_POSE_SRC_POSE_INPUT_PORT="{back_goods_front_surface_pose_project_in_agv_y_local_pos}"
+                            PARSE_POSE_Y_OUTPUT_PORT="{goods_in_agv_y_error}"
+                        />
+                        <GT_OP_NODE_NAME
+                            GT_OP_LFET_VALUE_INPUT_PORT="0.1"
+                            GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                            GT_OP_FAILED_CODE_INPUT_PORT="340806"
+                        />
+                        <GT_OP_NODE_NAME
+                            GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                            GT_OP_RIGHT_VALUE_INPUT_PORT="-0.1"
+                            GT_OP_FAILED_CODE_INPUT_PORT="340806"
+                        />
+                        <LATER_MOVE_FORK_NODE_NAME  
+                            LATER_MOVE_FORK_DELTA_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                        />
+                    </Sequence>
+                </IfThenElse>
+
+                <PJ_POS_IN_AGV_LA_NODE_NAME  
+                    PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{unload_position_agv_center_pos}" 
+                    PJ_POS_IN_AGV_LA_X_AXIS_LOCAL_POS_OUTPUT_PORT="{detect_unload_positon_x_in_local_axis}"
+                />
+                <PJ_POS_IN_AGV_LA_NODE_NAME  
+                    PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{deploy_unload_position_agv_center_pos}" 
+                    PJ_POS_IN_AGV_LA_X_AXIS_LOCAL_POS_OUTPUT_PORT="{deploy_unload_positon_x_in_local_axis}"
+                />
+                <PARSE_POSE_NODE_NAME
+                    PARSE_POSE_SRC_POSE_INPUT_PORT="{deploy_unload_positon_x_in_local_axis}"
+                    PARSE_POSE_X_OUTPUT_PORT="{deploy_x}"
+                />
+                <PARSE_POSE_NODE_NAME
+                    PARSE_POSE_SRC_POSE_INPUT_PORT="{detect_unload_positon_x_in_local_axis}"
+                    PARSE_POSE_X_OUTPUT_PORT="{detect_x}"
+                />
+                <DEBUG_LOG_NODE_NAME
+                    DEBUG_LOG_STR_INPUT_PORT="cacl sum_unload_error"
+                />
+                <SUBTRACT_OP_NODE_NAME
+                    SUBTRACT_OP_LFET_VALUE_INPUT_PORT="{detect_x}"
+                    SUBTRACT_OP_RIGHT_VALUE_INPUT_PORT="{deploy_x}"
+                    SUBTRACT_OP_RET_VALUE_OUTPUT_PORT="{sum_unload_error}"
+                />
+
+                <Fallback>
+                    <GT_OP_NODE_NAME
+                        GT_OP_LFET_VALUE_INPUT_PORT="{unload_height}"
+                        GT_OP_RIGHT_VALUE_INPUT_PORT="0.3"
+                    />
+                    <IfThenElse>
+                        <GT_OP_NODE_NAME
+                            GT_OP_LFET_VALUE_INPUT_PORT="{sum_unload_error}"
+                            GT_OP_RIGHT_VALUE_INPUT_PORT="0.1"
+                        />
+                        <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                            TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="-0.02"
+                            TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{unload_position_agv_center_pos}"
+                            TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{unload_position_agv_center_pos}"
+                        />
+                        <Fallback>
+                            <GT_OP_NODE_NAME
+                                GT_OP_LFET_VALUE_INPUT_PORT="{sum_unload_error}"
+                                GT_OP_RIGHT_VALUE_INPUT_PORT="-0.1"
+                            />
+                            <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                                TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="0.02"
+                                TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{unload_position_agv_center_pos}"
+                                TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{unload_position_agv_center_pos}"
+                            />
+                        </Fallback>
+                    </IfThenElse>
+                </Fallback>
+                <ReactiveSequence>
+                     <Fallback>
+                        <Sequence>
+                           <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{unload_position_agv_center_pos}"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_BACK_LIDAR="1"
+                           />
+                           <AUTO_RECOVER_TREE_NODE_NAME />
+                        </Sequence>
+                        <Sequence>
+                           <DEBUG_LOG_NODE_NAME
+                              DEBUG_LOG_STR_INPUT_PORT="auto recoverly halt tree in load goods move"
+                           />
+                           <AUTO_RECOVERLY_HALT_TREE_NODE_NAME />
+                        </Sequence>
+                     </Fallback>
+                     <MOVE_TO_TARGET_NODE_NAME
+                        MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{unload_position_agv_center_pos}" 
+                        MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                     />
+                     <AUTO_RECOVER_TREE_NODE_NAME />
+                </ReactiveSequence>
+                <LIFT_FORK_WITH_DETECT_LOAD_PRESS_NODE_NAME
+                    LIFT_FORK_WITH_DETECT_LOAD_PRESS_TARGET_HEIGHT_INPUT_PORT="{unload_height}"
+                />
+                <SECURITY_DETECT_DISABLE_NODE />
+                <ENABLE_PATH_OBA_AVOID_NODE_NAME />
+            </Sequence>
+            <ForceFailure>
+                <Sequence>
+                    <CANCEL_SRC_TASK_NODE_NAME />
+                    <SYNC_CANCEL_MOVE_TASK_NODE_NAME />
+                    <ENABLE_PATH_OBA_AVOID_NODE_NAME />
+                    <SECURITY_DETECT_DISABLE_NODE />              
+                </Sequence>
+            </ForceFailure>
+        </Fallback>
+     </BehaviorTree>
+ </root>
+ )";

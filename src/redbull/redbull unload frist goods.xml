@@ -1,0 +1,81 @@
+
+const char REDBULL_UNLOAD_FRIST_GOODS_ACTION_XML[] = R"(
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Fallback>
+            <Sequence name="root">
+                <DISABLE_PATH_OBA_AVOID_NODE_NAME />
+                <LATER_MOVE_FORK_NODE_NAME  
+                    LATER_MOVE_FORK_TARGET_VALUE_INPUT_PORT="0.0" 
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="0.4"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{half_of_goods_length}"
+                />
+                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="must_init_param"
+                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{agv_center_in_goods_front_surface_x}"
+                />
+                <ASSIGN_A_POSE_NODE_NAME
+                    ASSIGN_A_POSE_INPUT_POSE="must_init_param"
+                    ASSIGN_A_POSE_OUTPUT_POSE="{goods_center_station_pose}"
+                />
+
+
+                <AJUST_YAW_LITTLE_NODE_NAME  
+                    AJUST_YAW_LITTLE_TARGET_POS_INPUT_PORT="{goods_center_station_pose}" 
+                />
+                <PJ_POS_IN_AGV_LA_NODE_NAME  
+                    PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{goods_center_station_pose}" 
+                    PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{goods_center_station_pose}"
+                />
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{half_of_goods_length}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{goods_center_station_pose}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{deploy_unload_position_goods_front_surf_pos}"
+                />
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="{agv_center_in_goods_front_surface_x}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{deploy_unload_position_goods_front_surf_pos}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{deploy_unload_position_agv_center_pos}"
+                />
+                <ReactiveSequence>
+                     <Fallback>
+                        <Sequence>
+                           <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{deploy_unload_position_agv_center_pos}"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_BACK_LIDAR="1"
+                           />
+                           <AUTO_RECOVER_TREE_NODE_NAME />
+                        </Sequence>
+                        <Sequence>
+                           <DEBUG_LOG_NODE_NAME
+                              DEBUG_LOG_STR_INPUT_PORT="auto recoverly halt tree in load goods move"
+                           />
+                           <AUTO_RECOVERLY_HALT_TREE_NODE_NAME />
+                        </Sequence>
+                     </Fallback>
+                     <MOVE_TO_TARGET_NODE_NAME
+                        MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{deploy_unload_position_agv_center_pos}" 
+                        MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                     />
+                     <AUTO_RECOVER_TREE_NODE_NAME />
+                </ReactiveSequence>
+                <LIFT_FORK_WITH_DETECT_LOAD_PRESS_NODE_NAME
+                    LIFT_FORK_WITH_DETECT_LOAD_PRESS_TARGET_HEIGHT_INPUT_PORT="0.09"
+                />
+                <ENABLE_PATH_OBA_AVOID_NODE_NAME />
+            </Sequence>
+            <ForceFailure>
+                <Sequence>
+                    <CANCEL_SRC_TASK_NODE_NAME/>
+                    <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                    <ENABLE_PATH_OBA_AVOID_NODE_NAME/>              
+                </Sequence>
+            </ForceFailure>
+        </Fallback>
+     </BehaviorTree>
+ </root>
+)";
+
