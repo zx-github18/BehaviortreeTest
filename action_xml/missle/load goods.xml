@@ -1,0 +1,163 @@
+<!-- const char AIR_TO_AIR_MISSLE_LOAD_GOODS_ACTION_XML[] = R"( -->
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Fallback>
+            <ReactiveSequence>
+                <IS_TREE_NOT_IN_CANCEL/>
+                <Sequence name="root">
+                    <DISABLE_PATH_OBA_AVOID_NODE_NAME/> 
+                    <CLAMP_GOODS
+                        CLAMP_GOODS_LEFT_FORK_TARGET_POSITION = "0.8"
+                        CLAMP_GOODS_RIGHT_FORK_TARGET_POSITION = "-0.8"
+                    />
+                    <RetryUntilSuccessful num_attempts="5">
+                        <Sequence>
+                            <PALLET_DETECT_NODE_NAME  
+                                PALLET_DETECT_THEORY_POSE_INPUT_PORT="theory_station_pose_init_param" 
+                                PALLET_DETECT_RESULT_WORLD_POSE_OUTPUT_PORT="{goods_surface_pose}" 
+                                PALLET_DETECT_RESULT_AGV_POSE_OUTPUT_PORT="{goods_surface_pose_in_agv}"
+                            />
+                            <PARSE_POSE_NODE_NAME
+                                PARSE_POSE_SRC_POSE_INPUT_PORT="{goods_surface_pose_in_agv}"
+                                PARSE_POSE_YAW_OUTPUT_PORT="{goods_in_agv_yaw_error}" 
+                            />
+                            <Fallback>
+                                <Sequence>
+                                    <GT_OP_NODE_NAME
+                                        GT_OP_LFET_VALUE_INPUT_PORT="0.05"
+                                        GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                                    />
+                                    <GT_OP_NODE_NAME
+                                        GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                                        GT_OP_RIGHT_VALUE_INPUT_PORT="-0.05"
+                                    />
+                                </Sequence>
+                                <AJUST_YAW_LITTLE_NODE_NAME  
+                                    AJUST_YAW_LITTLE_TARGET_POS_INPUT_PORT="{goods_surface_pose}" 
+                                />
+                            </Fallback>
+                            <GT_OP_NODE_NAME
+                                GT_OP_LFET_VALUE_INPUT_PORT="0.05"
+                                GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                            />
+                            <GT_OP_NODE_NAME
+                                GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                                GT_OP_RIGHT_VALUE_INPUT_PORT="-0.05"
+                            />
+                        </Sequence>
+                    </RetryUntilSuccessful>
+                                
+                    <PJ_POS_IN_AGV_LA_NODE_NAME  
+                        PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{goods_surface_pose}" 
+                        PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}"
+                        PJ_POS_IN_AGV_LA_Y_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"
+                    />
+                    <PARSE_POSE_NODE_NAME
+                        PARSE_POSE_SRC_POSE_INPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"
+                        PARSE_POSE_Y_OUTPUT_PORT="{goods_in_agv_y_error}"
+                    />
+                    <GT_OP_NODE_NAME
+                        GT_OP_LFET_VALUE_INPUT_PORT="0.1"
+                        GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                        GT_OP_FAILED_CODE_INPUT_PORT="340806"
+                    />
+                    <GT_OP_NODE_NAME
+                        GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                        GT_OP_RIGHT_VALUE_INPUT_PORT="-0.1"
+                        GT_OP_FAILED_CODE_INPUT_PORT="340806"
+                    />
+                    <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                        TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="must_init_param"
+                        TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{goods_surface_pose}"
+                        TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{agv_center_pose}"
+                    />
+                    <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                        ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="-1"
+                        ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{cancel_honeywell_scan}"
+                    />
+
+                    <Parallel success_count="1" failure_count="2">
+                        <ForceFailure>
+                            <ReactiveSequence>
+                                <GT_OP_NODE_NAME
+                                    GT_OP_LFET_VALUE_INPUT_PORT="0"
+                                    GT_OP_RIGHT_VALUE_INPUT_PORT="{cancel_honeywell_scan}"
+                                />
+                                <HONEY_WELL_SCAN_NODE_NAME/>
+                            </ReactiveSequence>
+                        </ForceFailure>
+                        <ReactiveFallback>
+                            <ReactiveSequence>
+                                <IS_AVRRIVE_TAGET_POSE  
+                                    IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{agv_center_pose}" 
+                                    IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.2"
+                                />
+                                <IS_FORK_ROOT_COLLISON_BOTH_TIRGGER/>
+                                <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="1"
+                                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{cancel_honeywell_scan}"
+                                />
+                            </ReactiveSequence>
+                            <ReactiveSequence>
+                                <Fallback>
+                                    <Sequence>
+                                        <Fallback>
+                                            <Sequence>
+                                                <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
+                                                    IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="0.07"
+                                                    IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="0.3"
+                                                />
+                                                <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                                                    IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                                                    IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{agv_center_pose}"
+                                                />
+                                            </Sequence>
+                                            <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                                                IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                                                IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{agv_center_pose}"
+                                                IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_BACK_LIDAR="1"
+                                            />
+                                        </Fallback>
+                                        <AUTO_RECOVER_TREE_NODE_NAME />
+                                    </Sequence>
+                                    <Sequence>
+                                        <DEBUG_LOG_NODE_NAME
+                                            DEBUG_LOG_STR_INPUT_PORT="auto recoverly halt tree in load goods move"
+                                        />
+                                        <AUTO_RECOVERLY_HALT_TREE_NODE_NAME />
+                                    </Sequence>
+                                </Fallback>
+                                <MOVE_TO_TARGET_NODE_NAME
+                                    MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{agv_center_pose}" 
+                                    MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                                />
+                                <AUTO_RECOVER_TREE_NODE_NAME />
+                                <ASSIGN_A_DOUBLE_VALUE_NODE_NAME
+                                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_INPUT_PORT="1"
+                                    ASSIGN_A_DOUBLE_VALUE_NODE_NAME_VALUE_DEFINE_OUTPUT_PORT="{cancel_honeywell_scan}"
+                                />
+                            </ReactiveSequence>
+                        </ReactiveFallback>
+                    </Parallel>
+                    <CLAMP_GOODS
+                        CLAMP_GOODS_LEFT_FORK_TARGET_POSITION = "0.4"
+                        CLAMP_GOODS_RIGHT_FORK_TARGET_POSITION =  "-0.4"
+                    />
+                    <ENABLE_PATH_OBA_AVOID_NODE_NAME/>
+                </Sequence>
+            </ReactiveSequence>
+            <ForceFailure>
+                <Sequence>
+                    <CANCEL_SRC_TASK_NODE_NAME/>
+                    <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                    <ENABLE_PATH_OBA_AVOID_NODE_NAME/>
+                    <SET_SRC_SPEED_LEVEL
+                        SET_SRC_SPEED_LEVEL_LEVEL_PERCENTAGE="100" 
+                    />              
+                </Sequence>
+            </ForceFailure>
+        </Fallback>
+     </BehaviorTree>
+ </root>
+
