@@ -1,5 +1,5 @@
 
-const char REDBULL_UNLOAD_GOODS_SECURITY_ACTION_XML[] = R"(
+<!-- const char REDBULL_UNLOAD_GOODS_SECURITY_ACTION_XML[] = R"( -->
  <root BTCPP_format="4" >
      <BehaviorTree ID="MainTree">
         <Fallback>
@@ -252,4 +252,3 @@ const char REDBULL_UNLOAD_GOODS_SECURITY_ACTION_XML[] = R"(
         </Fallback>
      </BehaviorTree>
  </root>
- )";

@@ -21,7 +21,6 @@ const char REDBULL_UNLOAD_FRIST_GOODS_ACTION_XML[] = R"(
                     ASSIGN_A_POSE_OUTPUT_POSE="{goods_center_station_pose}"
                 />
 
-
                 <AJUST_YAW_LITTLE_NODE_NAME  
                     AJUST_YAW_LITTLE_TARGET_POS_INPUT_PORT="{goods_center_station_pose}" 
                 />
