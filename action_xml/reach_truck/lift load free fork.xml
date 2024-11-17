@@ -1,0 +1,52 @@
+<!-- const char FORK_LIFT_LOAD_FREE_ACTION_XML[] = R"( -->
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Fallback>
+            <ReactiveSequence>
+                <IS_TREE_NOT_IN_CANCEL/>
+                <ForceSuccess>
+                    <Sequence>
+                        <IS_PALLET_DETECTION_LIGHT_NOT_TRIGGER_NODE_NAME />
+                        <IS_PALLET_EXTARUSION_LIGHTT_NOT_TRIGGER_NODE_NAME />
+                        <IS_GOODS_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME />
+                    </Sequence>
+                </ForceSuccess>
+                <Fallback>
+                    <Sequence>
+                        <Fallback>
+                            <Sequence>
+                                <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
+                                    IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="0.07"
+                                    IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="0.3"
+                                />
+                                <Inverter>
+                                    <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                                        IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-1.15;0.5;-0.5"
+                                    />
+                                </Inverter>
+                            </Sequence>
+                            <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                                IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-1.15;1.5;-1.5"
+                            />
+                        </Fallback>
+                        <REMOVE_FAULT_CODE_NODE_NAME
+                            REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT="13444"
+                        />
+                    </Sequence>
+                    <SET_FAULT_CODE_NODE_NAME
+                        SET_FAULT_CODE_FAULT_CODE_INPUT_PORT="13444"
+                    />
+                </Fallback>
+                <LIFT_FORK_NODE_NAME  
+                    LIFT_FORK_TARGET_HEIGHT_INPUT_PORT="param0" 
+                />
+            </ReactiveSequence>
+            <ForceFailure>
+                <Sequence>
+                    <CANCEL_SRC_TASK_NODE_NAME/>
+                    <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                </Sequence>
+            </ForceFailure>
+        </Fallback>
+     </BehaviorTree>
+ </root>

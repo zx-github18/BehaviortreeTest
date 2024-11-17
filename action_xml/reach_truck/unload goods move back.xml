@@ -1,0 +1,79 @@
+<!-- const char REACH_TRUCK_FORK_UNLOAD_MOVE_BACK[] = R"( -->
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+         <Fallback>
+            <ReactiveSequence>
+               <IS_TREE_NOT_IN_CANCEL/>
+               <ForceSuccess>
+                  <Sequence>
+                     <IS_FORK_TIPE_LIGHT_NOT_TRIGGER_NODE_NAME />
+                     <IS_PALLET_EXTARUSION_LIGHTT_NOT_TRIGGER_NODE_NAME />
+                     <IS_GOODS_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME />
+                     <IS_PALLET_STILL_IN_WORLD />
+                     <IS_FORK_TIP_AND_COLLISON_NOT_TIRGGER />
+                  </Sequence>
+               </ForceSuccess>
+               <Sequence>
+                  <DISABLE_PATH_OBA_AVOID_NODE_NAME/>
+                  <FRONT_BACK_MOVE_FORK_NODE_NAME
+                     FRONT_BACK_MOVE_FORK_TARGET_VALUE_INPUT_PORT="0.0" 
+                  />
+                  <PJ_POS_IN_AGV_LA_NODE_NAME  
+                     PJ_POS_IN_AGV_LA_POS_INPUT_PORT="station_pose_init_param" 
+                     PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}"
+                     PJ_POS_IN_AGV_LA_X_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_local_pose}"
+                  />
+                  <PARSE_POSE_NODE_NAME
+                     PARSE_POSE_SRC_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_local_pose}"
+                     PARSE_POSE_X_OUTPUT_PORT="{target_pos_in_agv_x_coord}" 
+                  />
+                  <GT_OP_NODE_NAME
+                     GT_OP_LFET_VALUE_INPUT_PORT="{target_pos_in_agv_x_coord}"
+                     GT_OP_RIGHT_VALUE_INPUT_PORT="0.0"
+                     GT_OP_FAILED_CODE_INPUT_PORT="340863"
+                  />
+                  <ReactiveSequence>
+                     <IfThenElse>
+                        <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                           IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="1.75;0.35;0.8;-0.8"
+                           IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}"
+                           IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_LOCATION_LIDAR="0"
+                        />
+                        <REMOVE_FAULT_CODE_NODE_NAME
+                           REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                        />
+                         <SET_FAULT_CODE_NODE_NAME
+                           SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                        />
+                     </IfThenElse>
+                     <MOVE_TO_TARGET_NODE_NAME
+                        MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}" 
+                        MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                     />
+                     <AUTO_RECOVER_TREE_NODE_NAME />
+                  </ReactiveSequence>
+                  <IS_AVRRIVE_TAGET_POSE  
+                     IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}" 
+                     IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.1"
+                  />              
+                  <IS_AVRRIVE_TAGET_POSE  
+                     IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="station_pose_init_param" 
+                     IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.1"
+                  />
+                  <IS_FORK_ARRIVE_TARGET_X
+                     IS_FORK_ARRIVE_TARGET_X_TARGET_X_INPUT_PORT="0" 
+                     IS_FORK_ARRIVE_TARGET_X_ARRIVE_ACCURY_INPUT_PORT="0.02"
+                  />
+                  <ENABLE_PATH_OBA_AVOID_NODE_NAME/>                     
+               </Sequence>
+            </ReactiveSequence>
+            <ForceFailure>
+               <Sequence>
+                  <CANCEL_SRC_TASK_NODE_NAME/>
+                  <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                  <ENABLE_PATH_OBA_AVOID_NODE_NAME/>                     
+               </Sequence>
+            </ForceFailure>
+         </Fallback>
+     </BehaviorTree>
+ </root>

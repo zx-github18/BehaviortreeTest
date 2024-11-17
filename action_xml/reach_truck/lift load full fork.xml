@@ -1,0 +1,31 @@
+<!-- const char FORK_LIFT_LOAD_FULL_ACTION_XML[] = R"( -->
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Fallback>
+            <ReactiveSequence>
+                <IS_TREE_NOT_IN_CANCEL/>
+                <ForceSuccess>
+                    <Sequence>
+                        <IS_LOAD_FULL_NODE_NAME />
+                        <IS_PALLET_EXTARUSION_LIGHTT_NOT_TRIGGER_NODE_NAME />
+                        <IS_GOODS_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME />
+                        <IS_FORK_TIP_AND_COLLISON_NOT_TIRGGER/>
+                    </Sequence>
+                </ForceSuccess>
+                <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
+                    IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="param1"
+                    IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="param2"
+                />
+                <LIFT_FORK_NODE_NAME  
+                    LIFT_FORK_TARGET_HEIGHT_INPUT_PORT="param0" 
+                />
+            </ReactiveSequence>
+            <ForceFailure>
+                <Sequence>
+                    <CANCEL_SRC_TASK_NODE_NAME/>
+                    <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                </Sequence>
+            </ForceFailure>
+        </Fallback>
+     </BehaviorTree>
+ </root>
