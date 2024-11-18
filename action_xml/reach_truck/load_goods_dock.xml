@@ -17,7 +17,7 @@
                   <LATER_MOVE_FORK_NODE_NAME  
                      LATER_MOVE_FORK_TARGET_VALUE_INPUT_PORT="0.0" 
                   />
-                  <RetryUntilSuccessful num_attempts="5">
+                  <RetryUntilSuccessful num_attempts="5"> // 识别角度矫正最多5次
                      <Sequence>
                         <PALLET_DETECT_NODE_NAME  
                            PALLET_DETECT_THEORY_POSE_INPUT_PORT="theory_station_pose_init_param" 
@@ -31,7 +31,7 @@
                         
                         <Sequence>
                            <GT_OP_NODE_NAME
-                              GT_OP_LFET_VALUE_INPUT_PORT="0.05"
+                              GT_OP_LFET_VALUE_INPUT_PORT="0.05"    // arctan(0.05)*180/3.14159 = 2.86°
                               GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
                            />
                            <GT_OP_NODE_NAME
@@ -42,7 +42,7 @@
 
                         <Fallback>
                            <Fallback>
-                               <Sequence>
+                               <Sequence>   // 如果是地面或者铁架取货，角度误差要求在arctan(0.026)*180/3.14159 = 1.49°以内
                                  <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
                                     IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="0.07"
                                     IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="1.0"
@@ -56,7 +56,7 @@
                                     GT_OP_RIGHT_VALUE_INPUT_PORT="-0.026"
                                  />
                               </Sequence>
-                              <Sequence>
+                              <Sequence>    // 如果是高层货架取货，角度误差要求在arctan(0.03)*180/3.14159 = 1.72°以内
                                  <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
                                     IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="1.0"
                                     IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="7.5"
@@ -71,13 +71,13 @@
                                  />
                               </Sequence>
                            </Fallback>
-                           <AJUST_YAW_LITTLE_NODE_NAME  
+                           <AJUST_YAW_LITTLE_NODE_NAME  // 根据识别结果调整角度误差，调整精度要求：arctan(0.03)*180/3.14159 = 1.72°
                               AJUST_YAW_LITTLE_TARGET_POS_INPUT_PORT="{goods_surface_pose}" 
                               AJUST_YAW_LITTLE_TARGET_ACCURACY="0.03"
                            />
                         </Fallback>
                         <Fallback>
-                           <Sequence>
+                           <Sequence>   // 获取最新的调整结果，如果是地面或者铁架取货，角度误差要求在arctan(0.026)*180/3.14159 = 1.49°以内，否则报错340803
                               <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
                                  IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="0.07"
                                  IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="1.0"
@@ -93,7 +93,7 @@
                                  GT_OP_FAILED_CODE_INPUT_PORT="340803"
                               />
                            </Sequence>
-                           <Sequence>
+                           <Sequence>  // 获取最新的调整结果，如果是货架取货，角度误差要求在arctan(0.03)*180/3.14159 = 1.72°以内，否则报错340803
                               <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
                                  IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="1.0"
                                  IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="7.5"
@@ -113,13 +113,13 @@
                      </Sequence>
                   </RetryUntilSuccessful>
 
-                  <PJ_POS_IN_AGV_LA_NODE_NAME  
+                  <PJ_POS_IN_AGV_LA_NODE_NAME    // 目标在AGV坐标系下的投影
                      PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{goods_surface_pose}" 
                      PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}"
                      PJ_POS_IN_AGV_LA_X_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_local_pose}"
                      PJ_POS_IN_AGV_LA_Y_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"
                   />
-                  <GFS_TO_AGV_CENTER_NODE_NAME  
+                  <GFS_TO_AGV_CENTER_NODE_NAME    // 理论位姿推算
                      GFS_TO_AGV_CENTER_FORK_ROOT_IN_ZERO_POS_DIS_TO_GFS="0.62"
                      GFS_TO_AGV_CENTER_GFS_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}" 
                      GFS_TO_AGV_CENTER_AGV_CENTER_POSE_OUTPUT_PORT="{target_agv_center_pose}" 
@@ -136,7 +136,7 @@
                      PARSE_POSE_SRC_POSE_INPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"
                      PARSE_POSE_Y_OUTPUT_PORT="{goods_in_agv_y_error}" 
                   />
-                  <GT_OP_NODE_NAME
+                  <GT_OP_NODE_NAME  // 如果目标左右的偏差在[-0.1,0.1]之间则通过，否则报340806:左右偏差过大
                      GT_OP_LFET_VALUE_INPUT_PORT="0.1"
                      GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
                      GT_OP_FAILED_CODE_INPUT_PORT="340806"
@@ -150,7 +150,7 @@
                      PARSE_POSE_SRC_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_local_pose}"
                      PARSE_POSE_X_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_local_pose_x}" 
                   />
-                  <PARSE_POSE_NODE_NAME
+                  <PARSE_POSE_NODE_NAME    // 校验目标与理论位姿在在X方向上的偏差
                      PARSE_POSE_SRC_POSE_INPUT_PORT="{theroy_gfs_pj_in_agv_x_asix_local_pose}"
                      PARSE_POSE_X_OUTPUT_PORT="{theroy_gfs_pj_in_agv_x_asix_local_pose_x}" 
                   />
@@ -159,12 +159,12 @@
                      SUBTRACT_OP_RIGHT_VALUE_INPUT_PORT="{theroy_gfs_pj_in_agv_x_asix_local_pose_x}"
                      SUBTRACT_OP_RET_VALUE_OUTPUT_PORT="{goods_in_station_x_error}"
                   />
-                  <GT_OP_NODE_NAME
+                  <GT_OP_NODE_NAME  // 如果目标比理论位姿靠后大于7cm，否则报340805:目标太靠后
                      GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_station_x_error}"
                      GT_OP_RIGHT_VALUE_INPUT_PORT="-0.07"
                      GT_OP_FAILED_CODE_INPUT_PORT="340805"
                   />
-                  <IfThenElse>
+                  <IfThenElse> //如果左右的偏差超过7cm，不超过10cm，则按7cm进行侧移调整
                      <GT_OP_NODE_NAME
                         GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
                         GT_OP_RIGHT_VALUE_INPUT_PORT="0.07"
@@ -187,14 +187,14 @@
                   </IfThenElse>
                   <ReactiveSequence>
                      <ForceSuccess>
-                        <Sequence>
+                        <Sequence> // 校验叉尖光电，物料超宽光电，物料超高检测，物料挤压光电，卡板在位信号都不触发
                            <IS_FORK_TIPE_LIGHT_NOT_TRIGGER_NODE_NAME/>
                            <IS_GOODS_OVERHEIGHT_LIGHT_NOT_TRIGGER_NODE_NAME/>
                            <IS_PALLET_EXTARUSION_LIGHTT_NOT_TRIGGER_NODE_NAME/>
                            <IS_GOODS_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME />
                            <IS_PALLET_STILL_IN_WORLD/> 
                            <Fallback>
-                              <Fallback>
+                              <Fallback>  // 检验栈板左右超宽光电不触发，如果触发，则设置错误码13445
                                  <IS_PALLET_LEFT_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME/>
                                  <IS_PALLET_RIGHT_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME/>
                               </Fallback>
@@ -207,7 +207,7 @@
 
                      <Sequence>
                         <ReactiveSequence>
-                           <IfThenElse>
+                           <IfThenElse>   // 如果取货路径上没有障碍物，则清除错误码13421，否则设置错误码13421
                               <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
                                  IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
                                  IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}"
@@ -220,7 +220,7 @@
                                  SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
                               />
                            </IfThenElse>
-                           <MOVE_TO_TARGET_NODE_NAME
+                           <MOVE_TO_TARGET_NODE_NAME  // 车体移动到取货目标位置
                               MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}" 
                               MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
                            />
@@ -229,7 +229,7 @@
                            />
                         </ReactiveSequence>
 
-                        <PJ_POS_IN_AGV_LA_NODE_NAME  
+                        <PJ_POS_IN_AGV_LA_NODE_NAME   // 计算目标位置与AGV的位置的横向误差
                            PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{target_agv_center_pose}" 
                            PJ_POS_IN_AGV_LA_Y_AXIS_LOCAL_POS_OUTPUT_PORT="{move_y_error_pose}"
                         />
@@ -238,27 +238,27 @@
                            PARSE_POSE_Y_OUTPUT_PORT="{move_y_error}" 
                         />
                         <ForceSuccess>
-                           <LATER_MOVE_FORK_NODE_NAME  
+                           <LATER_MOVE_FORK_NODE_NAME    // 补偿移动过程中所产生的横向误差
                               LATER_MOVE_FORK_DELTA_VALUE_INPUT_PORT="{move_y_error}"
                            />
                         </ForceSuccess>
 
                         <ReactiveFallback>
                            <ReactiveSequence>
-                              <IS_AVRRIVE_TAGET_POSE  
+                              <IS_AVRRIVE_TAGET_POSE    // 确认移动到目标终点
                                  IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{target_agv_center_pose}" 
                                  IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.1"
                               />
-                              <IS_FORK_ARRIVE_TARGET_X
+                              <IS_FORK_ARRIVE_TARGET_X // 伸出门架
                                  IS_FORK_ARRIVE_TARGET_X_TARGET_X_INPUT_PORT="-0.52" 
                                  IS_FORK_ARRIVE_TARGET_X_ARRIVE_ACCURY_INPUT_PORT="0.1"
                               />
                               <Fallback>
-                                 <IS_PALLET_DISTANCE_IN_INTERVAL_NODE_NAME
+                                 <IS_PALLET_DISTANCE_IN_INTERVAL_NODE_NAME // 监测距离目标12cm时停止
                                     IS_PALLET_DISTANCE_IN_INTERVAL_LEFT_VALUE="0.0" 
                                     IS_PALLET_DISTANCE_IN_INTERVAL_RIGHT_VALUE="0.12"
                                  />
-                                 <Inverter>
+                                 <Inverter>  // 前移限位没有触发
                                     <IS_FOKR_OR_DOOR_FRAME_NOT_OVERPOSITION_NODE_NAME
                                       IGNORE_NODE_FAILURE_OUTPUT="1"
                                     />
@@ -266,7 +266,7 @@
                               </Fallback>
                               <CANCEL_SRC_TASK_NODE_NAME/>
                            </ReactiveSequence>
-                           <FRONT_BACK_MOVE_FORK_NODE_NAME
+                           <FRONT_BACK_MOVE_FORK_NODE_NAME // 缩回门架
                               FRONT_BACK_MOVE_FORK_TARGET_VALUE_INPUT_PORT="-0.52" 
                            />
                         </ReactiveFallback>

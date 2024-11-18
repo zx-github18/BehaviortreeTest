@@ -1,0 +1,151 @@
+<root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+        <Fallback>
+            <Sequence name="root">
+                <DISABLE_PATH_OBA_AVOID_NODE_NAME />  // 关闭路径避障
+                <LATER_MOVE_FORK_NODE_NAME     // 侧移居中
+                    LATER_MOVE_FORK_TARGET_VALUE_INPUT_PORT="0.0" 
+                />
+                <RetryUntilSuccessful num_attempts="5">
+                    <Sequence>
+                        <PALLET_DETECT_NODE_NAME  // 开启感知
+                            PALLET_DETECT_THEORY_POSE_INPUT_PORT="theory_station_pose_init_param"   // 输入理论位置
+                            PALLET_DETECT_RESULT_WORLD_POSE_OUTPUT_PORT="{goods_surface_pose}"      // 输出卡板全局位置
+                            PALLET_DETECT_RESULT_AGV_POSE_OUTPUT_PORT="{goods_surface_pose_in_agv}" // 输出卡板相对AGV位置
+                        />
+                        <PARSE_POSE_NODE_NAME
+                            PARSE_POSE_SRC_POSE_INPUT_PORT="{goods_surface_pose_in_agv}"
+                            PARSE_POSE_YAW_OUTPUT_PORT="{goods_in_agv_yaw_error}"   // 输出角度
+                        />
+                        <Fallback>
+                            <Sequence>  // 如果角度弧度在[-0.015, 0.015]=0.86°范围内，那不进行调整取货
+                                <GT_OP_NODE_NAME
+                                    GT_OP_LFET_VALUE_INPUT_PORT="0.015"
+                                    GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                                />
+                                <GT_OP_NODE_NAME
+                                    GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                                    GT_OP_RIGHT_VALUE_INPUT_PORT="-0.015"
+                                />
+                            </Sequence>
+                            <AJUST_YAW_LITTLE_NODE_NAME  // 如果角度弧度超过[-0.015, 0.015]=0.86°范围内，就进行调整取货
+                                AJUST_YAW_LITTLE_TARGET_POS_INPUT_PORT="{goods_surface_pose}" 
+                            />
+                        </Fallback>
+                        <GT_OP_NODE_NAME    // 再次判断角度弧度在[-0.015, 0.015]=0.86°范围内
+                            GT_OP_LFET_VALUE_INPUT_PORT="0.015"     
+                            GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                        />
+                        <GT_OP_NODE_NAME
+                            GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_yaw_error}"
+                            GT_OP_RIGHT_VALUE_INPUT_PORT="-0.015"
+                        />
+                    </Sequence>
+                </RetryUntilSuccessful>            
+                <PJ_POS_IN_AGV_LA_NODE_NAME  // 目标在AGV坐标系下的投影
+                    PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{goods_surface_pose}" 
+                    PJ_POS_IN_AGV_LA_X_AXIS_WORLD_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}"   // 目标在AGV坐标系下X方向的投影的全局位置
+                    PJ_POS_IN_AGV_LA_Y_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"   // 目标在AGV坐标系下Y方向上的投影
+                />
+                <PARSE_POSE_NODE_NAME
+                    PARSE_POSE_SRC_POSE_INPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"  
+                    PARSE_POSE_Y_OUTPUT_PORT="{goods_in_agv_y_error}" // 得到目标在AGV坐标系下Y方向上的偏差
+                />
+                <GT_OP_NODE_NAME
+                    GT_OP_LFET_VALUE_INPUT_PORT="0.1"
+                    GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                    GT_OP_FAILED_CODE_INPUT_PORT="340806"
+                />
+                <GT_OP_NODE_NAME
+                    GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                    GT_OP_RIGHT_VALUE_INPUT_PORT="-0.1"
+                    GT_OP_FAILED_CODE_INPUT_PORT="340806"
+                />
+                <IfThenElse>
+                    <GT_OP_NODE_NAME
+                        GT_OP_LFET_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                        GT_OP_RIGHT_VALUE_INPUT_PORT="0.07"
+                    />
+                    <LATER_MOVE_FORK_NODE_NAME  
+                        LATER_MOVE_FORK_DELTA_VALUE_INPUT_PORT="0.07" 
+                    />
+                    <IfThenElse>
+                        <GT_OP_NODE_NAME
+                            GT_OP_LFET_VALUE_INPUT_PORT="-0.07"
+                            GT_OP_RIGHT_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                        />
+                        <LATER_MOVE_FORK_NODE_NAME  
+                            LATER_MOVE_FORK_DELTA_VALUE_INPUT_PORT="-0.07" 
+                        />
+                        <LATER_MOVE_FORK_NODE_NAME  
+                            LATER_MOVE_FORK_DELTA_VALUE_INPUT_PORT="{goods_in_agv_y_error}"
+                        />
+                    </IfThenElse>
+                </IfThenElse>
+                <TRANSLATE_POS_ALONG_SELF_YAW_NODE_NAME
+                    TRANSLATE_POS_ALONG_SELF_YAW_TRANSLATE_LENGTH="must_init_param"
+                    TRANSLATE_POS_ALONG_SELF_YAW_INPUT_POS="{gfs_pj_in_agv_x_asix_world_pose}"
+                    TRANSLATE_POS_ALONG_SELF_YAW_OUTPUT_POS="{agv_center_pose}"
+                />
+                <ReactiveFallback>
+                    <ReactiveSequence>
+                        <IS_AVRRIVE_TAGET_POSE  
+                            IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{agv_center_pose}" 
+                            IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.2"
+                        />
+                        <IS_PALLET_DISTANCE_IN_INTERVAL_NODE_NAME
+                            IS_PALLET_DISTANCE_IN_INTERVAL_LEFT_VALUE="0.0" 
+                            IS_PALLET_DISTANCE_IN_INTERVAL_RIGHT_VALUE="0.2"
+                        />
+                        <SYNC_CANCEL_MOVE_TASK_NODE_NAME  
+                        />
+                    </ReactiveSequence>
+                    <ReactiveSequence>
+                        <Fallback>
+                            <Sequence>
+                                <Fallback>
+                                    <Sequence>
+                                        <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
+                                            IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="0.07"
+                                            IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="0.3"
+                                        />
+                                        <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                                            IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                                            IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{agv_center_pose}"
+                                        />
+                                    </Sequence>
+                                    <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                                        IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0;-0.18;1.5;-1.5"
+                                        IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{agv_center_pose}"
+                                        IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_BACK_LIDAR="1"
+                                    />
+                                </Fallback>
+                                <AUTO_RECOVER_TREE_NODE_NAME />
+                            </Sequence>
+                            <Sequence>
+                                <DEBUG_LOG_NODE_NAME
+                                    DEBUG_LOG_STR_INPUT_PORT="auto recoverly halt tree in load goods move"
+                                />
+                                <AUTO_RECOVERLY_HALT_TREE_NODE_NAME />
+                            </Sequence>
+                        </Fallback>
+                        <LOW_TAIL_V_DOCK_NODE_NAME
+                            LOW_TAIL_V_DOCK_ALL_LIMIT_V_INPUT_PORT="0.1" 
+                            LOW_TAIL_V_DOCK_TAIL_LIMIT_V_INPUT_PORT="0.03"
+                            LOW_TAIL_V_DOCK_TARGET_POSE_INPUT_PORT="{agv_center_pose}" 
+                        />
+                        <AUTO_RECOVER_TREE_NODE_NAME />
+                    </ReactiveSequence>
+                </ReactiveFallback>
+                <ENABLE_PATH_OBA_AVOID_NODE_NAME />
+            </Sequence>
+            <ForceFailure>
+                <Sequence>
+                    <CANCEL_SRC_TASK_NODE_NAME />
+                    <SYNC_CANCEL_MOVE_TASK_NODE_NAME />
+                    <ENABLE_PATH_OBA_AVOID_NODE_NAME />              
+                </Sequence>
+            </ForceFailure>
+        </Fallback>
+     </BehaviorTree>
+ </root>
