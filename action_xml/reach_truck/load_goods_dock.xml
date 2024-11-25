@@ -10,11 +10,11 @@
 
                <Sequence>
                   <DISABLE_PATH_OBA_AVOID_NODE_NAME />
-                  <IS_FORK_ARRIVE_TARGET_X
+                  <IS_FORK_ARRIVE_TARGET_X // 侧移居中
                      IS_FORK_ARRIVE_TARGET_X_TARGET_X_INPUT_PORT="0.0" 
                      IS_FORK_ARRIVE_TARGET_X_ARRIVE_ACCURY_INPUT_PORT="0.05"
                   />
-                  <LATER_MOVE_FORK_NODE_NAME  
+                  <LATER_MOVE_FORK_NODE_NAME   // 侧移回中
                      LATER_MOVE_FORK_TARGET_VALUE_INPUT_PORT="0.0" 
                   />
                   <RetryUntilSuccessful num_attempts="5"> // 识别角度矫正最多5次
@@ -119,20 +119,20 @@
                      PJ_POS_IN_AGV_LA_X_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_x_asix_local_pose}"
                      PJ_POS_IN_AGV_LA_Y_AXIS_LOCAL_POS_OUTPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"
                   />
-                  <GFS_TO_AGV_CENTER_NODE_NAME    // 理论位姿推算
+                  <GFS_TO_AGV_CENTER_NODE_NAME   // 根据物料前表面位置，叉臂根部到AGV中心，取货到位距离，门架前移距离，推算取货行走终点位置
                      GFS_TO_AGV_CENTER_FORK_ROOT_IN_ZERO_POS_DIS_TO_GFS="0.62"
                      GFS_TO_AGV_CENTER_GFS_POSE_INPUT_PORT="{gfs_pj_in_agv_x_asix_world_pose}" 
                      GFS_TO_AGV_CENTER_AGV_CENTER_POSE_OUTPUT_PORT="{target_agv_center_pose}" 
                   />
-                  <GC_TO_GFS_NODE_NAME  
+                  <GC_TO_GFS_NODE_NAME   // 沿站点方向推物料(第六个卡板)长度的1/2，作为理论物料前表面位姿
                      GC_TO_GFS_GC_POSE_INPUT_PORT="theory_station_pose_init_param" 
                      GC_TO_GFS_GFS_POSE_OUTPUT_PORT="{theory_goods_surface_pose}" 
                   />
                   <PJ_POS_IN_AGV_LA_NODE_NAME  
-                     PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{theory_goods_surface_pose}" 
+                     PJ_POS_IN_AGV_LA_POS_INPUT_PORT="{theory_goods_surface_pose}" // 计算理论位姿在AGVx方向上的投影
                      PJ_POS_IN_AGV_LA_X_AXIS_LOCAL_POS_OUTPUT_PORT="{theroy_gfs_pj_in_agv_x_asix_local_pose}"
                   />
-                  <PARSE_POSE_NODE_NAME
+                  <PARSE_POSE_NODE_NAME   // 解析y方向上的偏差
                      PARSE_POSE_SRC_POSE_INPUT_PORT="{gfs_pj_in_agv_y_asix_local_pose}"
                      PARSE_POSE_Y_OUTPUT_PORT="{goods_in_agv_y_error}" 
                   />
@@ -272,7 +272,7 @@
                         </ReactiveFallback>
 
                         <Fallback>
-                           <Sequence>
+                           <Sequence>  // 左右横移调整到栈板超宽不触发
                               <Repeat num_cycles="3">
                                  <Fallback>
                                     <IS_PALLET_LEFT_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME
