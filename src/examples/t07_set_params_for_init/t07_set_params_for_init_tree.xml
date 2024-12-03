@@ -1,0 +1,28 @@
+<root BTCPP_format="4">
+
+    <BehaviorTree ID = "MainTree" >
+        <Sequence>
+            <ActionCommand action_id="{action_id}" station_id="{param0}" target_height="{param1}" undefind="{param2}" />
+            <Script code=" move_goal = '1;2;3' "/>
+            <SubTree ID = "MoveRobots" target="{move_goal}" 
+                                       result="{move_result}" />
+            <SaySomething message="target" />
+            <SaySomething message="{station_id}" />
+            <SaySomething message="{target_height}" />
+            <SaySomething message="{undefind}" />
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID = "MoveRobots">
+        <Fallback>
+           <Sequence>
+                <MoveBase goal="{target}" />
+                <Script code = " result:='goal reached' " />
+           </Sequence> 
+           <ForceFailure>
+                <Script code = " result='error'" />
+           </ForceFailure>
+        </Fallback>
+    </BehaviorTree>
+
+</root>

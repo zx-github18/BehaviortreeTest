@@ -53,7 +53,6 @@ BT::NodeStatus MoveBase::onStart()
 
 BT::NodeStatus MoveBase::onRunning()
 {
-
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     if (std::chrono::system_clock::now() > _complete_time_)
