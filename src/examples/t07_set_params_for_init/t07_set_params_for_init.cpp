@@ -27,7 +27,7 @@ int main()
     BT::BehaviorTreeFactory factory;
 
     factory.registerNodeType<MoveBase>("MoveBase");
-    factory.registerNodeType<SaySomething>("SaySomething");
+    factory.registerNodeType<SaySomething<int>>("SaySomething");
     factory.registerNodeType<ActionCommand>("ActionCommand", 10162, 99, 100);
 
     const std::string source_dir =

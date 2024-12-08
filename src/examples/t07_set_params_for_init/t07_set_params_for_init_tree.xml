@@ -2,11 +2,11 @@
 
     <BehaviorTree ID = "MainTree" >
         <Sequence>
-            <ActionCommand action_id="{action_id}" station_id="{param0}" target_height="{param1}" undefind="{param2}" />
+            <ActionCommand action_id="{action_id}" param0="{station_id}" param1="{target_height}" param2="{undefind}" />
             <Script code=" move_goal = '1;2;3' "/>
             <SubTree ID = "MoveRobots" target="{move_goal}" 
                                        result="{move_result}" />
-            <SaySomething message="target" />
+            <SaySomething message="{action_id}" />
             <SaySomething message="{station_id}" />
             <SaySomething message="{target_height}" />
             <SaySomething message="{undefind}" />

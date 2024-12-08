@@ -34,7 +34,7 @@ int main()
 {
     BT::BehaviorTreeFactory factory;
 
-    factory.registerNodeType<SaySomething>("SaySomething");
+    factory.registerNodeType<SaySomething<std::string>>("SaySomething");
     factory.registerNodeType<MoveBase>("MoveBase");
     factory.registerSimpleCondition("BatteryOK", std::bind(CheckBattery));
 

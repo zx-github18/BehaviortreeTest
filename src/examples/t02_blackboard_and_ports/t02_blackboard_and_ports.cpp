@@ -6,7 +6,7 @@ int main()
 {
     BT::BehaviorTreeFactory factory;
 
-    factory.registerNodeType<SaySomething>("SaySomething");
+    factory.registerNodeType<SaySomething<std::string>>("SaySomething");
     factory.registerNodeType<ThinkWhatToSay>("ThinkWhatToSay");
 
     const std::string source_dir =

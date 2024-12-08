@@ -19,21 +19,21 @@ class ActionCommand : public BT::SyncActionNode {
     static BT::PortsList providedPorts()
     {
         return {BT::OutputPort<int>("action_id"),
-                BT::OutputPort<int>("station_id"),
-                BT::OutputPort<int>("target_height"),
-                BT::OutputPort<int>("undefind")};
+                BT::OutputPort<int>("param0"),
+                BT::OutputPort<int>("param1"),
+                BT::OutputPort<int>("param2")};
     }
 
     BT::NodeStatus tick() override
     {
-        setOutput("action_id", action_id_);
-        setOutput("station_id", param0_);
-        setOutput("target_height", param1_);
-        setOutput("undefind", param2_);
+        setOutput<int>("action_id", action_id_);
+        setOutput<int>("param0", param0_);
+        setOutput<int>("param1", param1_);
+        setOutput<int>("param2", param2_);
 
-        std::cout << "action cmd id: " << action_id_ << " station_id" << param0_
-                  << " target_height" << param1_ << " undefind" << param2_
-                  << std::endl;
+        std::cout << "action cmd id: " << action_id_
+                  << "  p0: " << param0_ << "  p1: " << param1_
+                  << "  p2: " << param2_ << std::endl;
         return BT::NodeStatus::SUCCESS;
     }
 
