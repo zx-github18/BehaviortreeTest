@@ -26,7 +26,7 @@ int main()
     BT::BehaviorTreeFactory factory;
 
     factory.registerNodeType<MoveBase>("MoveBase");
-    factory.registerNodeType<SaySomething>("SaySomething");
+    factory.registerNodeType<SaySomething<std::string>>("SaySomething");
 
     const std::string source_dir =
         "/home/zx/Projects/BehaviortreeTest/src/examples/";
