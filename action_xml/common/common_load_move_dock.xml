@@ -1,0 +1,62 @@
+<!-- const char REACH_TRUCK_FORK_LOAD_DOCK_XML[] = R"( -->
+ <root BTCPP_format="4" >
+     <BehaviorTree ID="MainTree">
+         <Fallback>
+            <ReactiveSequence>
+               <IS_TREE_NOT_IN_CANCEL />
+               <ForceSuccess>
+                  <IS_FORK_TIP_AND_COLLISON_NOT_TIRGGER/>
+               </ForceSuccess>
+               <Sequence>
+                  <DISABLE_PATH_OBA_AVOID_NODE_NAME />
+                  <RetryUntilSuccessful num_attempts="3"> // 识别不到时重试3次
+                     <PALLET_DETECT_NODE_NAME  
+                        PALLET_DETECT_THEORY_POSE_INPUT_PORT="theory_station_pose_init_param" 
+                        PALLET_DETECT_RESULT_WORLD_POSE_OUTPUT_PORT="{goods_surface_pose}" 
+                        PALLET_DETECT_RESULT_AGV_POSE_OUTPUT_PORT="{goods_surface_pose_in_agv}"
+                        PALLET_DETECT_RESULT_GOODS_ID_OUTPUT_PORT="{goods_id}"
+                     />
+                  </RetryUntilSuccessful>
+                  <AdjustLoadGoods
+                     detect_pose_input="{goods_surface_pose}" 
+                     control_accuracy_input="0.03"
+                     target_pose_output="{target_agv_center_pose}"
+                  />
+                  <MOVE_TO_TARGET_NODE_NAME  // 车体移动到取货目标位置
+                     MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}" 
+                     MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                  />
+                  <ReactiveSequence>
+                     <IS_AVRRIVE_TAGET_POSE    // 确认移动到目标终点
+                        IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{target_agv_center_pose}" 
+                        IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.1"
+                     />
+                     <IfThenElse>
+                        <IS_PALLET_DISTANCE_IN_INTERVAL_NODE_NAME // 监测距离目标12cm时停止
+                           IS_PALLET_DISTANCE_IN_INTERVAL_LEFT_VALUE="0.0" 
+                           IS_PALLET_DISTANCE_IN_INTERVAL_RIGHT_VALUE="0.12"
+                        />
+                        <Sequence>
+                           <REMOVE_FAULT_CODE_NODE_NAME
+                              FAULT_CODE_INPUT_PORT = "13421"
+                           />
+                           <CANCEL_SRC_TASK_NODE_NAME />
+                        </Sequence>
+                        <SET_FAULT_CODE_NODE_NAME
+                           FAULT_CODE_INPUT_PORT = "13421"
+                        />
+                     </IfThenElse>
+                  </ReactiveSequence>
+                  <ENABLE_PATH_OBA_AVOID_NODE_NAME />                     
+               </Sequence>
+            </ReactiveSequence>
+            <ForceFailure>
+               <Sequence>
+                  <CANCEL_SRC_TASK_NODE_NAME/>
+                  <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                  <ENABLE_PATH_OBA_AVOID_NODE_NAME/>              
+               </Sequence>
+            </ForceFailure>
+         </Fallback>
+     </BehaviorTree>
+</root>
