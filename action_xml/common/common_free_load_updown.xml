@@ -1,0 +1,67 @@
+<root BTCPP_format="4" >
+<BehaviorTree ID="MainTree">
+      <Fallback>
+         <ReactiveSequence>
+            <IS_TREE_NOT_IN_CANCEL/>
+            <ForceSuccess>
+               <Sequence>
+                  <IS_FORK_TIP_AND_COLLISON_NOT_TIRGGER/>
+                  <IS_FORK_TIPE_LIGHT_NOT_TRIGGER_NODE_NAME/>
+                  <IS_GOODS_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME />
+                  <Inverter>
+                    <IS_LOAD_FULL_NODE_NAME />
+                  </Inverter>
+               </Sequence>
+            </ForceSuccess>
+
+            <Sequence>
+               <ReactiveSequence>
+                  <Fallback>
+                     <Inverter>
+                        <IS_FORK_HEIGHT_IN_INTERVAL_NODE_NAME
+                           IS_FORK_HEIGHT_IN_INTERVAL_LEFT_VALUE="0.07"
+                           IS_FORK_HEIGHT_IN_INTERVAL_RIGHT_VALUE="0.3"
+                        />
+                     </Inverter>
+                     <IfThenElse>
+                        <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                           IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="-0.6;0.8;1.5;-1.5"
+                           IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="station_pose_init_param"
+                           IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_LOCATION_LIDAR="0"
+                        />
+                        <REMOVE_FAULT_CODE_NODE_NAME
+                           REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13444"
+                        />
+                        <SET_FAULT_CODE_NODE_NAME
+                           SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13444"
+                        />
+                     </IfThenElse>
+                  </Fallback>
+                  <LIFT_FORK_NODE_NAME  
+                    LIFT_FORK_TARGET_HEIGHT_INPUT_PORT="param1"
+                  />
+               </ReactiveSequence>
+              
+               <IfThenElse>
+                  <IS_FORK_ARRIVE_TARGET_HEIGHT
+                     IS_FORK_ARRIVE_TARGET_HEIGHT_TARGET_HEIGHT_INPUT_PORT="param1"
+                     IS_FORK_ARRIVE_TARGET_HEIGHT_ARRIVE_ACCURY_INPUT_PORT="0.01"
+                  />
+                  <REMOVE_FAULT_CODE_NODE_NAME
+                     REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "340823"
+                  />
+                  <SET_FAULT_CODE_NODE_NAME
+                     SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "340823"
+                  />
+               </IfThenElse>
+               
+               <CANCEL_SRC_TASK_NODE_NAME />
+            </Sequence>
+
+         </ReactiveSequence>
+         <ForceFailure>
+            <CANCEL_SRC_TASK_NODE_NAME/>
+         </ForceFailure>
+      </Fallback>
+   </BehaviorTree>
+</root>
