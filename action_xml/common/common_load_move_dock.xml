@@ -5,6 +5,7 @@
                <IS_TREE_NOT_IN_CANCEL/>
                <ForceSuccess>
                   <IS_FORK_TIP_AND_COLLISON_NOT_TIRGGER/>
+                  <IS_FORK_TIPE_LIGHT_NOT_TRIGGER_NODE_NAME/>
                </ForceSuccess>
                <Sequence>
                   <DISABLE_PATH_OBA_AVOID_NODE_NAME />
@@ -102,12 +103,10 @@
                   />
 
                   <ReactiveSequence>
-                     <!-- 校验叉尖光电，物料超宽光电，物料超高检测，卡板在位信号都不触发 -->
+                     <!-- 校验叉尖光电，物料超宽光电，卡板在位信号都不触发 -->
                      <ForceSuccess>
                         <Sequence>
-                           <IS_FORK_TIPE_LIGHT_NOT_TRIGGER_NODE_NAME/>
-                           <IS_GOODS_OVERHEIGHT_LIGHT_NOT_TRIGGER_NODE_NAME/>
-                           <IS_GOODS_OVERWIDTH_LIGHT_NOT_TRIGGER_NODE_NAME />
+
                            <IS_PALLET_STILL_IN_WORLD/>
                         </Sequence>
                      </ForceSuccess>

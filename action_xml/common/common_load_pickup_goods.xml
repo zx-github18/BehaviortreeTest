@@ -1,6 +1,7 @@
 <root BTCPP_format="4" >
    <BehaviorTree ID="MainTree">
       <Fallback>
+         <IS_GOODS_OVERHEIGHT_LIGHT_NOT_TRIGGER_NODE_NAME/>
          <ReactiveSequence>
             <IS_TREE_NOT_IN_CANCEL/>
             <ForceSuccess>
