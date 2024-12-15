@@ -5,7 +5,6 @@
                <IS_TREE_NOT_IN_CANCEL/>
                <ForceSuccess>
                   <IS_FORK_TIP_AND_COLLISON_NOT_TIRGGER/>
-                  <IS_FORK_TIPE_LIGHT_NOT_TRIGGER_NODE_NAME/>
                </ForceSuccess>
                <Sequence>
                   <DISABLE_PATH_OBA_AVOID_NODE_NAME />
@@ -90,7 +89,7 @@
                      />
                      <GT_OP_NODE_NAME
                         GT_OP_LFET_VALUE_INPUT_PORT="{goods_x_error}"
-                        GT_OP_RIGHT_VALUE_INPUT_PORT="-0.05"
+                        GT_OP_RIGHT_VALUE_INPUT_PORT="-0.03"
                         GT_OP_FAILED_CODE_INPUT_PORT="340805"
                      />
                   </Sequence>
@@ -101,66 +100,64 @@
                      GFS_TO_AGV_CENTER_GFS_POSE_INPUT_PORT="{goods_surface_pose}"
                      GFS_TO_AGV_CENTER_AGV_CENTER_POSE_OUTPUT_PORT="{target_agv_center_pose}"
                   />
-
                   <ReactiveSequence>
-                     <!-- 校验叉尖光电，物料超宽光电，卡板在位信号都不触发 -->
-                     <ForceSuccess>
+                     <!--到达目标终点，监测距离目标12cm时停止-->
+                     <IfThenElse>
+                        <!--如果移动到达目标终点，返回错误码13421，否则继续移动-->
+                        <IS_PALLET_DISTANCE_IN_INTERVAL_NODE_NAME
+                           IS_PALLET_DISTANCE_IN_INTERVAL_LEFT_VALUE="0.0"
+                           IS_PALLET_DISTANCE_IN_INTERVAL_RIGHT_VALUE="0.12"
+                        />
                         <Sequence>
-
-                           <IS_PALLET_STILL_IN_WORLD/>
+                           <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
+                           <REMOVE_FAULT_CODE_NODE_NAME
+                              REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                              />
                         </Sequence>
-                     </ForceSuccess>
-
-                     <ReactiveFallback>
-                        <ReactiveSequence>
-                           <!--到达目标终点，监测距离目标12cm时停止-->
-                           <IS_PALLET_DISTANCE_IN_INTERVAL_NODE_NAME
-                              IS_PALLET_DISTANCE_IN_INTERVAL_LEFT_VALUE="0.0"
-                              IS_PALLET_DISTANCE_IN_INTERVAL_RIGHT_VALUE="0.12"
+                        <SET_FAULT_CODE_NODE_NAME
+                           SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                        />
+                    </IfThenElse>
+                  
+                     <Sequence>
+                        <!-- 如果取货路径上没有障碍物，则清除错误码13421，否则设置错误码13421 -->
+                        <IfThenElse>
+                           <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0.6;0.8;1.5;-1.5"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}"
+                              IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_LOCATION_LIDAR="0"
                            />
-                           <IfThenElse>
-                              <!--如果移动到达目标终点，返回错误码13421，否则继续移动-->
-                              <IS_AVRRIVE_TAGET_POSE
-                                 IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{target_agv_center_pose}"
-                                 IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.1"
-                              />
-                              <REMOVE_FAULT_CODE_NODE_NAME
-                                 REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
-                              />
-                              <SET_FAULT_CODE_NODE_NAME
-                                 SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
-                              />
-                          </IfThenElse>
-                        </ReactiveSequence>
+                           <REMOVE_FAULT_CODE_NODE_NAME
+                              REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                           />
+                            <SET_FAULT_CODE_NODE_NAME
+                              SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                           />
+                        </IfThenElse>
 
-                        <ReactiveSequence>
-                           <!-- 如果取货路径上没有障碍物，则清除错误码13421，否则设置错误码13421 -->
-                           <IfThenElse>
-                              <IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_NODE_NAME
-                                 IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_AVOID_MODEL_INPUT_PORT="0.6;0.8;1.5;-1.5"
-                                 IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}"
-                                 IS_LINE_PATH_LOAD_GOODS_NOT_EXIST_OBA_USE_LOCATION_LIDAR="0"
-                              />
-                              <REMOVE_FAULT_CODE_NODE_NAME
-                                 REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
-                              />
-                               <SET_FAULT_CODE_NODE_NAME
-                                 SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
-                              />
-                           </IfThenElse>
-
-                           <!--车体移动到取货目标位置-->
-                           <MOVE_TO_TARGET_NODE_NAME
-                              MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}"
-                              MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
-                            />
-                           <DEBUG_LOG_NODE_NAME
-                              DEBUG_LOG_STR_INPUT_PORT="start move..."
-                            />
-                        </ReactiveSequence>
-                     </ReactiveFallback>
+                        <!--车体移动到取货目标位置-->
+                        <MOVE_TO_TARGET_NODE_NAME
+                           MOVE_TO_TARGET_TARGET_POSE_INPUT_PORT="{target_agv_center_pose}"
+                           MOVE_TO_TARGET_PLAN_PARMS_INPUT_PORT="must_init_param"
+                         />
+                        <DEBUG_LOG_NODE_NAME
+                           DEBUG_LOG_STR_INPUT_PORT="start move..."
+                         />
+                     </Sequence>
                   </ReactiveSequence>
-
+                  <IfThenElse>
+                     <!--如果移动到达目标终点，返回错误码13421，否则继续移动-->
+                     <IS_AVRRIVE_TAGET_POSE
+                        IS_AVRRIVE_TAGET_POSE_TRAGET_POSE_INPUT_PORT="{target_agv_center_pose}"
+                        IS_AVRRIVE_TAGET_POSE_ARRIVE_ACCURY_INPUT_PORT="0.1"
+                     />
+                     <REMOVE_FAULT_CODE_NODE_NAME
+                        REMOVE_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                     />
+                     <SET_FAULT_CODE_NODE_NAME
+                        SET_FAULT_CODE_FAULT_CODE_INPUT_PORT = "13421"
+                     />
+                  </IfThenElse>
                   <SYNC_CANCEL_MOVE_TASK_NODE_NAME/>
                   <CANCEL_SRC_TASK_NODE_NAME />
                   <ENABLE_PATH_OBA_AVOID_NODE_NAME />                     
